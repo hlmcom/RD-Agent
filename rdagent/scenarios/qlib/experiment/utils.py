@@ -12,7 +12,8 @@ from rdagent.utils.env import QTDockerEnv
 
 def generate_data_folder_from_qlib():
     template_path = Path(__file__).parent / "factor_data_template"
-    qtde = QTDockerEnv()
+    from rdagent.utils.env import QlibCondaEnv
+    qtde = QlibCondaEnv()
     qtde.prepare()
 
     # Run the Qlib backtest
