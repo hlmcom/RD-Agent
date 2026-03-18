@@ -4,6 +4,9 @@ import socket
 import docker
 import fire
 import litellm
+
+litellm.drop_params = True
+
 from litellm import completion, embedding
 from litellm.utils import ModelResponse
 
@@ -83,6 +86,7 @@ def test_embedding(embedding_model, embedding_api_key, embedding_api_base):
             api_key=embedding_api_key,
             api_base=embedding_api_base,
             input="Hello world!",
+            encoding_format="float",
         )
         logger.info("✅ Embedding test passed.")
         return True
@@ -115,8 +119,9 @@ def env_check():
         chat_api_base = os.getenv("OPENAI_API_BASE")
         chat_model = os.getenv("CHAT_MODEL")
         embedding_model = os.getenv("EMBEDDING_MODEL")
-        embedding_api_key = chat_api_key
-        embedding_api_base = chat_api_base
+        # Prefer dedicated embedding credentials when they exist
+        embedding_api_key = os.getenv("EMBEDDING_OPENAI_API_KEY") or os.getenv("LITELLM_PROXY_API_KEY") or chat_api_key
+        embedding_api_base = os.getenv("EMBEDDING_OPENAI_BASE_URL") or os.getenv("LITELLM_PROXY_API_BASE") or chat_api_base
     else:
         logger.error("No valid configuration was found, please check your .env file.")
 

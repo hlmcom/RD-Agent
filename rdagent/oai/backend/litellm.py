@@ -11,6 +11,9 @@ from litellm import (
     supports_response_schema,
     token_counter,
 )
+import litellm
+litellm.drop_params = True
+
 from litellm.exceptions import BadRequestError, Timeout
 from pydantic import BaseModel
 
@@ -82,6 +85,7 @@ class LiteLLMAPIBackend(APIBackend):
         response = embedding(
             model=model_name,
             input=input_content_list,
+            encoding_format="float",
         )
         response_list = [data["embedding"] for data in response.data]
         return response_list
